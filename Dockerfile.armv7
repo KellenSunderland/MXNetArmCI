@@ -1,0 +1,20 @@
+# -*- mode: dockerfile -*-
+# dockerfile to build libmxnet.so for armv7
+FROM dockcross/linux-armv7
+
+RUN apt-get update && \
+    apt-get install -y libopenblas-dev:armhf && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV ARCH armv71
+ENV CC /usr/bin/arm-linux-gnueabihf-gcc
+ENV CXX /usr/bin/arm-linux-gnueabihf-g++
+ENV BUILD_OPTS "USE_BLAS=openblas USE_SSE=0"
+
+# Build MXNet
+ADD https://api.github.com/repos/apache/incubator-mxnet/git/refs/heads/master /tmp/mxnet_version.json
+RUN git clone --recursive https://github.com/apache/incubator-mxnet.git
+ADD arm.crosscompile.mk /work/incubator-mxnet/make/config.mk
+
+RUN cd incubator-mxnet && \
+    make -j$(nproc) $BUILD_OPTS

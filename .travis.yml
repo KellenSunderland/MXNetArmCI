@@ -1,0 +1,28 @@
+sudo: required
+language: python
+
+services:
+  - docker
+
+matrix:
+  include:
+    - env: arm_version=armv6
+
+    - env: arm_version=armv7
+
+    - env: arm_version=arm64
+
+
+before_install:
+  - docker build -f Dockerfile.$arm_version -t $arm_version .
+
+python:
+  - "3.6"
+
+install:
+
+script:
+  - mkdir -p $arm_version
+  - docker run -v `pwd`/$arm_version:/$arm_version $arm_version bash -c "cp /work/incubator-mxnet/lib/* /$arm_version"
+  - ls -ah `pwd`/$arm_version
+  
