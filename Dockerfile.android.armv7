@@ -60,8 +60,7 @@ ENV HOSTCC gcc
 # Build OpenBLAS
 RUN git clone https://github.com/xianyi/OpenBLAS.git && \
     cd OpenBLAS && \
-    make -j$(nproc) TARGET=ARMV7 libs && \
-    ln -s 
+    make -j$(nproc) TARGET=ARMV7 libs
 
 ENV OPENBLAS_ROOT /work/OpenBLAS
 ENV LIBRARY_PATH /work/OpenBLAS/lib/:/work/OpenBLAS/:$LIBRARY_PATH
